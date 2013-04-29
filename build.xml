@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Octopus" basedir="." default="all">
+    <property name="project.name" value="${ant.project.name}"/>
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="src.dir" location="${basedir}/src" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="version" value="0.1" />
+	<path id="build.library">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="all" depends="src.compile, jar"></target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="src.compile">
+		<mkdir dir="${build.dir}/classes" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes">
+			<classpath refid="build.library" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="src.compile">
+		<jar jarfile="${build.dir}/${project.name}-${version}.jar"
+			basedir="${build.dir}/classes" />
+	</target>
+
+</project>
