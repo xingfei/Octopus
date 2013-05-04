@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <project name="Octopus" basedir="." default="all">
-    <property name="project.name" value="${ant.project.name}"/>
+	<property name="project.name" value="${ant.project.name}" />
 	<property name="build.dir" location="${basedir}/build" />
 	<property name="src.dir" location="${basedir}/src" />
 	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="dist.dir" location="${basedir}/dist" />
 	<property name="version" value="0.1" />
+	<property name="jarfile" location="${build.dir}/${project.name}-${version}.jar" />
 	<path id="build.library">
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
@@ -15,18 +18,33 @@
 
 	<target name="clean">
 		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
 	</target>
 
 	<target name="src.compile">
 		<mkdir dir="${build.dir}/classes" />
-		<javac srcdir="${src.dir}" destdir="${build.dir}/classes">
+		<javac srcdir="${src.dir}" destdir="${build.dir}/classes"
+			includeantruntime="false">
 			<classpath refid="build.library" />
 		</javac>
 	</target>
 
 	<target name="jar" depends="src.compile">
-		<jar jarfile="${build.dir}/${project.name}-${version}.jar"
-			basedir="${build.dir}/classes" />
+		<jar jarfile="${jarfile}" basedir="${build.dir}/classes" />
+	</target>
+
+	<target name="dist" depends="jar">
+		<mkdir dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}/bin" />
+		<mkdir dir="${dist.dir}/lib" />
+		<copy file="${jarfile}" todir="${dist.dir}/lib"></copy>
+		<copy todir="${dist.dir}/lib">
+			<fileset dir="${lib.dir}" />
+		</copy>
+		<copy todir="${dist.dir}/bin">
+			<fileset dir="${basedir}/exec" />
+		</copy>
+		<chmod file="${dist.dir}/bin/octopus.sh" perm="755" />
 	</target>
 
 </project>
