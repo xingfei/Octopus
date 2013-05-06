@@ -1,6 +1,5 @@
 package com.github.xingfei.octopus.pool;
 
-import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 
 import com.github.xingfei.octopus.Debugger;

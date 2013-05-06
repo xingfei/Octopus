@@ -3,6 +3,14 @@ package com.github.xingfei.octopus.defer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * a simplified defer implementation borrowed from python's twisted framework
+ * refer to http://twistedmatrix.com/documents/12.3.0/core/howto/defer.html
+ * for detail
+ * @author xingfei
+ *
+ * @param <E>
+ */
 public class Deferred<E> {
 	static class ListenerArgs<T> {
 		T listener;

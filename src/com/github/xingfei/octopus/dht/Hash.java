@@ -10,9 +10,15 @@ package com.github.xingfei.octopus.dht;
 public class Hash {
 	public static final int HASH_LEN = 32;
 	public static final int SEED = 0x13aed78e; // just a random seed
+	
 	public int hash(String data) {
 		return hash(data.getBytes(), HASH_LEN, SEED);
 	}
+	
+	public int hash(byte[] data) {
+		return hash(data, HASH_LEN, SEED);
+	}
+	
 	/**
 	 * murmur hash implementation, copied from hadoop's MurmurHash.java
 	 * @param data
@@ -20,7 +26,7 @@ public class Hash {
 	 * @param seed
 	 * @return
 	 */
-	public int hash(byte[] data, int length, int seed) {
+	private int hash(byte[] data, int length, int seed) {
 		int m = 0x5bd1e995;
 		int r = 24;
 
