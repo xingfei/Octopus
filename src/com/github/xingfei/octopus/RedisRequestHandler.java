@@ -11,19 +11,25 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 
-import com.github.xingfei.octopus.dht.DistributeHashTable;
-import com.github.xingfei.octopus.dht.KeyedObject;
+import com.github.xingfei.octopus.dht.ConsistentHash;
 import com.github.xingfei.octopus.pool.ConnectionPool;
 import com.github.xingfei.octopus.redis.RedisReply;
 import com.github.xingfei.octopus.redis.RedisRequest;
 
+/**
+ * this is where to handle the redis request. 
+ * for those command that don't need to
+ * send to backend servers, reply them immediately.
+ * @author xingfei
+ *
+ */
 public class RedisRequestHandler extends SimpleChannelHandler {
 	private ConcurrentHashMap<String, ConnectionPool> pools;
-	private DistributeHashTable<BackendServer> dht;
+	private ConsistentHash dht;
 	private ClientBootstrap bootstrap;
 
 	public RedisRequestHandler(ConcurrentHashMap<String, ConnectionPool> pools,
-			DistributeHashTable<BackendServer> dht, ClientBootstrap bootstrap) {
+			ConsistentHash dht, ClientBootstrap bootstrap) {
 		super();
 		this.pools = pools;
 		this.dht = dht;
@@ -50,13 +56,14 @@ public class RedisRequestHandler extends SimpleChannelHandler {
 				future.addListener(ChannelFutureListener.CLOSE);
 			}
 			break;
-		case "VERBOSE":
+		case "VERBOSE": // a special command to enable/disable debugger
 			Debugger.noisy = Boolean.valueOf(request.getKey());
+		case "SELECT": // "select db" will have no effect
 			request.sendToClient(RedisReply.status("OK"));
 			break;
 		default:
 			String key = request.getKey();
-			KeyedObject server = dht.find(key);
+			BackendServer server = dht.find(key);
 			String name = server.getKey();
 
 			pools.putIfAbsent(name, new ConnectionPool((BackendServer)server, bootstrap));
