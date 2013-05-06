@@ -2,13 +2,16 @@ package com.github.xingfei.octopus;
 
 import java.net.InetSocketAddress;
 
-import com.github.xingfei.octopus.dht.KeyedObject;
-
-public class BackendServer implements KeyedObject {
+/**
+ * BackendServer stands for a backend redis server
+ * @author xingfei
+ *
+ */
+public class BackendServer {
 	public static final int DEFAULT_WEIGHT = 3;
 	private String host;
 	private int port;
-	private int weight;
+	private int weight = DEFAULT_WEIGHT;
 	private String name;
 	public BackendServer(String host, int port, int weight, String name) {
 		super();
