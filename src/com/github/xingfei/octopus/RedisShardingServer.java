@@ -1,7 +1,6 @@
 package com.github.xingfei.octopus;
 
 import java.io.File;
-import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -48,9 +47,8 @@ public class RedisShardingServer {
 			return;
 		}
 
-		ServerConfig config = new ServerConfig();
 		try {
-			config.read(filepath);
+			ServerConfig config = ServerConfig.load(filepath);
 			server.start(config);
 		} catch (Exception e) {
 
@@ -69,8 +67,8 @@ public class RedisShardingServer {
 		// 设置 pipeline factory.
 		bootstrap.setPipelineFactory(new ServerPipelineFactory(config, clientChannelFactory));
 		// 绑定端口
-		bootstrap.bind(new InetSocketAddress(config.getPort()));
-		Debugger.debug("redis-sharding start on " + config.getPort());
+		//bootstrap.bind(new InetSocketAddress(config.getPort()));
+		//Debugger.debug("redis-sharding start on " + config.getPort());
 	}
 
 }
